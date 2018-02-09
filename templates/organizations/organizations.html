@@ -12,7 +12,6 @@
       </div>
       <div class="col-md-6">
         <div class="create_new text-right">
-
           <a href="{% url 'organizations:add_organization' %}"><i class="fa fa-plus"></i> Add New Organization</a>
         </div>
       </div>
@@ -29,13 +28,15 @@
           <div class="panel-content text-center">
             <div class="filter_col col-md-4">
               <div class="form-group">
-                <label for="exampleInputEmail1">Name</label>
-                <input type="text" class="form-control" placeholder="Name" name="Name" value="{{request.POST.Name}}">
+                <label for="exampleInputEmail1">Organization Name</label>
+                <input type="text" class="form-control" placeholder="Name" name="name" value="{{request.POST.Name}}">
               </div>
             </div>
             <div class="filter_col col-md-4">
               <div class="form-group">
                 <label for="exampleInputEmail1">Lead Status</label>
+                 
+
                 <select class="form-control" id="id_status" name="status" >
                   <option value="">--Status of Organizations--</option>
                   {% for each_status in status %}
@@ -70,7 +71,7 @@
             <thead>
               <tr>
                 <th width="15%" style="text-align:center;">S.No</th>
-                <th width="25%" style="text-align:center;">NAME</th>
+                <th width="25%" style="text-align:center;">ORGANIZATIONS NAME</th>
                 <th width="15%" style="text-align:center;">STATUS</th>
                 <!-- <th width="20%" style="text-align:center;">ASSIGNED USER</th> -->
                 <th width="15%" style="text-align:center;">CREATED ON</th>
@@ -86,13 +87,14 @@
               {% for org in org_obj %}
               <tr class="text-center">
                 <td scope="row">{{ forloop.counter }}</td>
-                <td><a >{{ org.Name }}</a></td>
+                <td><a href="{% url  'organizations:view_organization' org.id %}">{{ org.name }}</a></td>
                 <td>{{ org.status }}</td>
                 <td>{{ org.created_on }}</td>
                 <td>
-                  <a class="btn btn-info">View</a>
-                  <a class="btn btn-success">Edit</a>
-                  <a class="btn btn-danger">Delete</a>
+                  <a href="{% url 'organizations:view_organization' org.id %}" class="btn btn-info ">View</a>
+                  <a href="{% url 'organizations:edit_organization' org.id %}" class="btn btn-success ">Edit</a>
+                  <a href="{% url 'organizations:remove_organization' org.id %}" class="btn btn-danger delete">Delete</a>
+
                 </td>
               </tr>
               {% endfor %}
@@ -114,6 +116,15 @@
 {% endblock %}
 {% block js_block %}
 <script type="text/javascript">
+ $('.delete').click(function(e){
+  e.preventDefault()
+  url = $(this).attr('href')
+  if (!confirm('Are you sure you want to delete?'))
+    return;
+  window.location = $(this).attr('href')
+});
+
+
   $("a[rel='page']").click(function(e){
     e.preventDefault();
     $('#organizations_filter').attr("action", $(this).attr("href"));
